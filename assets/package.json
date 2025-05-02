@@ -3,12 +3,8 @@
   "version": "1.0.0",
   "main": "maugallery.js",
   "scripts": {
-    "purge:css": "purgecss --css css/bootstrap.min.css --content \"../*.html\" \"js/maugallery.js\" --output css/"
+    "purge:css": "purgecss --css bootstrap/bootstrap.min.css --content \"../*.html\" \"maugallery.js\" --output bootstrap/"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
     "purgecss": "^7.0.2"
   }
