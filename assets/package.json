@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "maugallery.js",
   "scripts": {
-    "purge:css": "purgecss --css bootstrap/bootstrap.min.css --content \"../*.html\" \"maugallery.js\" --output bootstrap/"
+    "purge:css": "purgecss --css bootstrap/bootstrap.min.css --content \"../*.html\" \"js/maugallery.js\" --output bootstrap/"
   },
   "devDependencies": {
     "purgecss": "^7.0.2"
