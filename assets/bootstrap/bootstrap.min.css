@@ -2219,12 +2219,12 @@ progress {
 @media (prefers-reduced-motion:reduce) {
     .form-control::-webkit-file-upload-button {
         -webkit-transition: none;
-        transition: none
+        transition: none;
     }
 }
 
 .form-control:hover:not(:disabled):not([readonly])::-webkit-file-upload-button {
-    background-color: #dde0e3
+    background-color: #dde0e3;
 }
 
 .form-control-plaintext {
@@ -2568,7 +2568,7 @@ textarea.form-control-lg {
     cursor: pointer;
     background-color: #dee2e6;
     border-color: transparent;
-    border-radius: 1rem
+    border-radius: 1rem;
 }
 
 .form-range::-moz-range-thumb {
@@ -2580,18 +2580,18 @@ textarea.form-control-lg {
     -moz-transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     -moz-appearance: none;
-    appearance: none
+    appearance: none;
 }
 
 @media (prefers-reduced-motion:reduce) {
     .form-range::-moz-range-thumb {
         -moz-transition: none;
-        transition: none
+        transition: none;
     }
 }
 
 .form-range::-moz-range-thumb:active {
-    background-color: #b6d4fe
+    background-color: #b6d4fe;
 }
 
 .form-range::-moz-range-track {
@@ -2601,7 +2601,7 @@ textarea.form-control-lg {
     cursor: pointer;
     background-color: #dee2e6;
     border-color: transparent;
-    border-radius: 1rem
+    border-radius: 1rem;
 }
 
 .form-range:disabled {
