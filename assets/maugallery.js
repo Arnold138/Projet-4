@@ -179,8 +179,8 @@
           </div>
         </div>
       `);
-      $('body').append($modal);
-    },
+      $gallery.append($modal);
+        },
     
     // Ouvre la lightbox et y injecte l'image cliquée
     openLightBox: function($item, lightboxId) {
