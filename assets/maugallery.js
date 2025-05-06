@@ -154,7 +154,33 @@
         );
       }
     },
-
+    createLightBox: function($gallery, lightboxId, navigation) {
+      // Identifiant de la modale
+      const id = lightboxId || "galleryLightbox";
+      // HTML des flèches si navigation activée
+      const prev = navigation
+        ? '<div class="mg-prev" style="cursor:pointer;position:absolute;top:50%;left:-15px;background:white;"><</div>'
+        : '<span style="display:none;"></span>';
+      const next = navigation
+        ? '<div class="mg-next" style="cursor:pointer;position:absolute;top:50%;right:-15px;background:white;">></div>'
+        : '<span style="display:none;"></span>';
+    
+      // Injection de la structure de la lightbox
+      $gallery.append(`
+        <div class="modal fade" id="${id}" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body" style="position: relative;">
+                ${prev}
+                <img class="lightboxImage img-fluid" alt="Image affichée dans la modale" />
+                ${next}
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    },
+    
     // Ouvre la lightbox et y injecte l'image cliquée
     openLightBox: function($item, lightboxId) {
       const $lb = $(`#${lightboxId}`);
