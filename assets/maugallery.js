@@ -193,7 +193,8 @@
     changeImage: function(lightboxId, direction) {
       const $gallery = this;
       const $lb      = $(`#${lightboxId}`);
-      const currSrc  = $lb.find(".lightboxImage").attr("src");
+      const $img     =$lb.find(".lightboxImage");
+      const currSrc  = $img.attr("src");
 
       // Récupère tous les imgs de la galerie, puis filtre
       const srcs = $gallery
@@ -212,7 +213,18 @@
 
       // +1 ou -1 avec boucle
       idx = (idx + direction + srcs.length) % srcs.length;
-      $lb.find(".lightboxImage").attr("src", srcs[idx]);
+      const nextSrc =srcs[idx];
+
+      const W = $img.width();
+      const shift =direction > 0 ? -W : W;
+
+      $img 
+      .css({position:"relative"})
+      .animate({left: shift}, 300, function() {
+        $img.css("left", -shift);
+        $img.attr("src",nextSrc);
+        $img.animate({left:0},300);
+      });
     },
 
     // Génère le HTML de la barre de tags
