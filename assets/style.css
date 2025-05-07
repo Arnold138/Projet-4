@@ -238,7 +238,14 @@ form textarea {
 input[type="submit"] {
 	background-color: #BEB45A;
 	padding: .5em 1em
-}
+} 
+/*test pour la lightbox*/
+.lightboxImage {
+	display: block;
+	width:100;
+	transition: trasnform 0.5s ease-in-out;
+	transform:translate(0);
+ }
 
 @media all and (max-width: 1180px) {
 	.picture {

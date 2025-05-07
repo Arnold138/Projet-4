@@ -193,39 +193,44 @@
     changeImage: function(lightboxId, direction) {
       const $gallery = this;
       const $lb      = $(`#${lightboxId}`);
-      const $img     =$lb.find(".lightboxImage");
+      const $img     = $lb.find(".lightboxImage");
       const currSrc  = $img.attr("src");
-
-      // Récupère tous les imgs de la galerie, puis filtre
+    
+      // 1) collecte et filtre des src
       const srcs = $gallery
         .find("img.gallery-item")
         .filter((i, img) => {
-          const tag = $gallery
-            .find(".tags-bar .active-tag")
-            .data("images-toggle");
+          const tag = $gallery.find(".tags-bar .active-tag").data("images-toggle");
           return tag === "all" || $(img).data("gallery-tag") === tag;
         })
         .map((i, img) => $(img).attr("src"))
         .get();
-
+    
+      // 2) calcul de l'index suivant
       let idx = srcs.indexOf(currSrc);
       if (idx < 0) return;
-
-      // +1 ou -1 avec boucle
       idx = (idx + direction + srcs.length) % srcs.length;
-      const nextSrc =srcs[idx];
-
-      const W = $img.width();
-      const shift =direction > 0 ? -W : W;
-
-      $img 
-      .css({position:"relative"})
-      .animate({left: shift}, 300, function() {
-        $img.css("left", -shift);
-        $img.attr("src",nextSrc);
-        $img.animate({left:0},300);
-      });
-    },
+      const nextSrc = srcs[idx];
+    
+      // 3) on translate hors-champ
+      const offset = direction > 0 ? "-100%" : "100%";
+      $img.css("transform", `translateX(${offset})`);
+    
+      // 4) après la transition CSS (300ms), on swap et revient
+      setTimeout(() => {
+        // on replace l'image juste de l'autre côté
+        const reset = direction > 0 ? "100%" : "-100%";
+        $img
+          .attr("src", nextSrc)
+          .css("transform", `translateX(${reset})`);
+    
+        // et on glisse vers le centre
+        setTimeout(() => {
+          $img.css("transform", "translateX(0)");
+        }, 20);
+      }, 300);
+    }
+    ,
 
     // Génère le HTML de la barre de tags
     showItemTags: function($gallery, position, tags) {
