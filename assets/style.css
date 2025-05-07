@@ -239,13 +239,12 @@ input[type="submit"] {
 	background-color: #BEB45A;
 	padding: .5em 1em
 } 
-/*test pour la lightbox*/
 .lightboxImage {
 	display: block;
-	width:100;
-	transition: trasnform 0.5s ease-in-out;
-	transform:translate(0);
- }
+	width: 100%;                         
+	transition: transform 0.5s ease-in-out; 
+	transform: translateX(0);
+  }
  .carousel-item,
 .carousel-item-next,
 .carousel-item-prev,
