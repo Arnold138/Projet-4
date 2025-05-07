@@ -246,6 +246,17 @@ input[type="submit"] {
 	transition: trasnform 0.5s ease-in-out;
 	transform:translate(0);
  }
+ .carousel-item,
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.carousel-inner {
+  overflow: hidden;
+}
 
 @media all and (max-width: 1180px) {
 	.picture {
