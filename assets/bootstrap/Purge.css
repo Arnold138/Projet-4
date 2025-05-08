@@ -781,7 +781,38 @@ textarea.form-control {
     opacity: .5;
     transition: opacity .6s ease
 }
-
+/* 1) On masque le débordement */
+.carousel-inner {
+    overflow: hidden !important;
+  }
+  
+  /* 2) Transition forcée sur toutes les combinaisons Bootstrap v4/v5 */
+  .carousel-item,
+  .carousel-item.active,
+  .carousel-item-next,
+  .carousel-item-prev,
+  .carousel-item-left,
+  .carousel-item-right,
+  .carousel-item-start,
+  .carousel-item-end,
+  .carousel-item.active.carousel-item-left,
+  .carousel-item.active.carousel-item-right,
+  .carousel-item.active.carousel-item-start,
+  .carousel-item.active.carousel-item-end {
+    transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out !important;
+  }
+  
+  /* 3) Tous les états “arrivé à 0” */
+  .carousel-item-next.carousel-item-left,
+  .carousel-item.active.carousel-item-left,
+  .carousel-item-prev.carousel-item-right,
+  .carousel-item.active.carousel-item-right,
+  .carousel-item-next.carousel-item-start,
+  .carousel-item.active.carousel-item-start,
+  .carousel-item-prev.carousel-item-end,
+  .carousel-item.active.carousel-item-end {
+    transform: translateX(0) !important;
+  }
 @media (prefers-reduced-motion:reduce) {
     .carousel-indicators [data-bs-target] {
         transition: none
