@@ -250,20 +250,29 @@ input[type="submit"] {
 .carousel-inner {
 	overflow: hidden;
   }
-  .carousel-item,
-  .carousel-item-active,
-  .carousel-item-next,
-  .carousel-item-prev,
-  .carousel-item-start,
-  .carousel-item-end,
-  .active.carousel-item-start,
-  .active.carousel-item-end{
-	transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
-  }
-  .carousel-item-next.carousel-item-start,
-.carousel-item-prev.carousel-item-end,
+/* 1) Transition forcée sur TOUTES les combinaisons Bootstrap v4 & v5 */
+.carousel-item,
+.carousel-item-active,
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item-left,
+.carousel-item-right,
+.carousel-item-start,
+.carousel-item-end,
+.active.carousel-item-left,
+.active.carousel-item-right,
 .active.carousel-item-start,
 .active.carousel-item-end{
+	transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+  }
+  .carousel-item-next.carousel-item-left,
+  .active.carousel-item-left,
+  .carousel-item-prev.carousel-item-right,
+  .active.carousel-item-right,
+  .carousel-item-next.carousel-item-start,
+  .active.carousel-item-start,
+  .carousel-item-prev.carousel-item-end,
+  .active.carousel-item-end{
 	transform: translateX(0);
   } 
   .service__price p {
