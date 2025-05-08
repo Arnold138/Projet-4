@@ -259,7 +259,31 @@ input[type="submit"] {
   .carousel-item-next.carousel-item-left,
   .carousel-item-prev.carousel-item-right {
 	transform: translateX(0);
-  }
+  } 
+  .service__price p {
+    font-size: 1.5rem;
+	margin-bottom:0;
+}
+
+.service__price span {
+    font-size: 1rem;
+} 
+
+
+div.mg-prev {
+    display: none;
+}
+
+div.mg-next {
+    display: none;
+} 
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
 @media all and (max-width: 1180px) {
 	.picture {
 		flex : 2;

@@ -98,7 +98,11 @@ body {
 
 @media (min-width: 1200px) {
     .h2,h2 {
-        font-size:2rem
+        font-size: 1.75rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        line-height: 1.2;
     }
 }
 
