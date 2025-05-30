@@ -293,6 +293,10 @@ nav {
     width: 100%;
     z-index: 1000;
 }
+.gallery-items-row.row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
 @media all and (max-width: 1180px) {
 	.picture {
 		flex : 2;
