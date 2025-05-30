@@ -1,59 +1,45 @@
 (function($) {
-  // Déclaration du plugin
   $.fn.mauGallery = function(options) {
-    // Fusion des options utilisateur avec les valeurs par défaut
-    options = $.extend({}, $.fn.mauGallery.defaults, options);
+    var options = $.extend($.fn.mauGallery.defaults, options);
+    var tagsCollection = [];
     return this.each(function() {
-      const $gallery       = $(this);
-      const tagsCollection = [];
-
-      // 1. Création du wrapper de ligne unique à cette galerie
-      $.fn.mauGallery.methods.createRowWrapper($gallery);
-
-      // 2. Création de la lightbox si activée
+      $.fn.mauGallery.methods.createRowWrapper($(this));
       if (options.lightBox) {
         $.fn.mauGallery.methods.createLightBox(
-          $gallery,
+          $(this),
           options.lightboxId,
           options.navigation
         );
       }
+      $.fn.mauGallery.listeners(options);
 
-      // 3. Attachement des listeners, scoped à cette instance
-      $.fn.mauGallery.listeners.call($gallery, options);
+      $(this)
+        .children(".gallery-item")
+        .each(function(index) {
+          $.fn.mauGallery.methods.responsiveImageItem($(this));
+          $.fn.mauGallery.methods.moveItemInRowWrapper($(this));
+          $.fn.mauGallery.methods.wrapItemInColumn($(this), options.columns);
+          var theTag = $(this).data("gallery-tag");
+          if (
+            options.showTags &&
+            theTag !== undefined &&
+            tagsCollection.indexOf(theTag) === -1
+          ) {
+            tagsCollection.push(theTag);
+          }
+        });
 
-      // 4. Traitement de chaque item
-      $gallery.children(".gallery-item").each(function() {
-        const $item = $(this);
-        $.fn.mauGallery.methods.responsiveImageItem($item);
-        $.fn.mauGallery.methods.moveItemInRowWrapper($item);
-        $.fn.mauGallery.methods.wrapItemInColumn($item, options.columns);
-
-        const theTag = $item.data("gallery-tag");
-        if (
-          options.showTags &&
-          theTag !== undefined &&
-          tagsCollection.indexOf(theTag) === -1
-        ) {
-          tagsCollection.push(theTag);
-        }
-      });
-
-      // 5. Affichage de la barre de tags si demandé
       if (options.showTags) {
         $.fn.mauGallery.methods.showItemTags(
-          $gallery,
+          $(this),
           options.tagsPosition,
           tagsCollection
         );
       }
 
-      // 6. Affichage progressif de la galerie
-      $gallery.fadeIn(500);
+      $(this).fadeIn(500);
     });
   };
-
-  // Options par défaut
   $.fn.mauGallery.defaults = {
     columns: 3,
     lightBox: true,
@@ -62,203 +48,218 @@
     tagsPosition: "bottom",
     navigation: true
   };
-
-  
   $.fn.mauGallery.listeners = function(options) {
-    const $gallery = this;
-
-    $gallery.off(".mauGallery");
-
-    // Clic sur une image : ouverture de la lightbox
-    $gallery.on("click.mauGallery", ".gallery-item", function() {
-      if (options.lightBox && this.tagName === "IMG") {
-        $.fn.mauGallery.methods.openLightBox(
-          $(this),
-          options.lightboxId
-        );
-      }
-    });
-
-    // Clic sur un tag : filtrage des images
-    $gallery.on(
-      "click.mauGallery",
-      ".nav-link",
-      $.fn.mauGallery.methods.filterByTag
-    );
-
-    // Flèche précédente
-    $gallery.on("click.mauGallery", ".mg-prev", function() {
-      $.fn.mauGallery.methods.changeImage.call(
-        $gallery,
-        options.lightboxId,
-        -1
-      );
-    });
-
-    // Flèche suivante
-    $gallery.on("click.mauGallery", ".mg-next", function() {
-      $.fn.mauGallery.methods.changeImage.call(
-        $gallery,
-        options.lightboxId,
-        +1
-      );
-    });
-  };
-
-  // -------------- MÉTHODES --------------
-  $.fn.mauGallery.methods = {
-    // Crée une seule div.row pour cette galerie
-    createRowWrapper: function($gallery) {
-      if (!$gallery.children(".gallery-items-row").length) {
-        $gallery.append(
-          '<div class="gallery-items-row row"></div>'
-        );
-      }
-    },
-
-    // Place chaque item dans la bonne colonne de sa galerie
-    moveItemInRowWrapper: function($item) {
-      $item.appendTo(
-        $item
-          .closest(".gallery")
-          .find(".gallery-items-row")
-      );
-    },
-
-    // Ajoute la classe Bootstrap si c'est une image
-    responsiveImageItem: function($item) {
-      if ($item.prop("tagName") === "IMG") {
-        $item.addClass("img-fluid");
-      }
-    },
-
-    // Wrap de l’item dans une colonne responsive
-    wrapItemInColumn: function($item, columns) {
-      if (typeof columns === "number") {
-        $item.wrap(
-          `<div class="item-column mb-4 col-${Math.ceil(
-            12 / columns
-          )}"></div>`
-        );
+    // Événement sur les images (ouvre la lightbox)
+    $(".gallery-item").on("click", function() {
+      if (options.lightBox && $(this).prop("tagName") === "IMG") {
+        $.fn.mauGallery.methods.openLightBox($(this), options.lightboxId);
       } else {
-        let classes = "";
-        ["xs", "sm", "md", "lg", "xl"].forEach(bp => {
-          if (columns[bp]) {
-            classes += ` col-${bp === "xs" ? "" : bp + "-"}${Math.ceil(
-              12 / columns[bp]
-            )}`;
+        return;
+      }
+    });
+
+    // Événements de filtrage (tags)
+    $(".gallery").on("click", ".nav-link", $.fn.mauGallery.methods.filterByTag);
+
+    // Événements navigation modale sur <body>
+    $("body").on("click", ".mg-prev", () =>
+      $.fn.mauGallery.methods.prevImage(options.lightboxId)
+    );
+    $("body").on("click", ".mg-next", () =>
+      $.fn.mauGallery.methods.nextImage(options.lightboxId)
+    );
+  };
+  $.fn.mauGallery.methods = {
+    createRowWrapper(element) {
+      if (
+        !element
+          .children()
+          .first()
+          .hasClass("row")
+      ) {
+        element.append('<div class="gallery-items-row row"></div>');
+      }
+    },
+    wrapItemInColumn(element, columns) {
+      if (columns.constructor === Number) {
+        element.wrap(
+          `<div class='item-column mb-4 col-${Math.ceil(12 / columns)}'></div>`
+        );
+      } else if (columns.constructor === Object) {
+        var columnClasses = "";
+        if (columns.xs) {
+          columnClasses += ` col-${Math.ceil(12 / columns.xs)}`;
+        }
+        if (columns.sm) {
+          columnClasses += ` col-sm-${Math.ceil(12 / columns.sm)}`;
+        }
+        if (columns.md) {
+          columnClasses += ` col-md-${Math.ceil(12 / columns.md)}`;
+        }
+        if (columns.lg) {
+          columnClasses += ` col-lg-${Math.ceil(12 / columns.lg)}`;
+        }
+        if (columns.xl) {
+          columnClasses += ` col-xl-${Math.ceil(12 / columns.xl)}`;
+        }
+        element.wrap(`<div class='item-column mb-4${columnClasses}'></div>`);
+      } else {
+        console.error(
+          `Columns should be defined as numbers or objects. ${typeof columns} is not supported.`
+        );
+      }
+    },
+    moveItemInRowWrapper(element) {
+      element.appendTo(".gallery-items-row");
+    },
+    responsiveImageItem(element) {
+      if (element.prop("tagName") === "IMG") {
+        element.addClass("img-fluid");
+      }
+    },
+    openLightBox(element, lightboxId) {
+      $(`#${lightboxId}`)
+        .find(".lightboxImage")
+        .attr("src", element.attr("src"));
+      $(`#${lightboxId}`).modal("toggle");
+    },
+    prevImage() {
+      let activeImage = null;
+      $("img.gallery-item").each(function() {
+        // Correction : comparer les URL absolues (plus robuste)
+        if ($(this)[0].src === $(".lightboxImage")[0].src) {
+          activeImage = $(this);
+        }
+      });
+      let activeTag = $(".tags-bar span.active-tag").data("images-toggle");
+      let imagesCollection = [];
+      if (activeTag === "all") {
+        $(".item-column").each(function() {
+          if ($(this).children("img").length) {
+            imagesCollection.push($(this).children("img"));
           }
         });
-        $item.wrap(
-          `<div class="item-column mb-4${classes}"></div>`
-        );
+      } else {
+        $(".item-column").each(function() {
+          if (
+            $(this)
+              .children("img")
+              .data("gallery-tag") === activeTag
+          ) {
+            imagesCollection.push($(this).children("img"));
+          }
+        });
+      }
+      let index = 0;
+      $(imagesCollection).each(function(i) {
+        if ($(activeImage)[0].src === $(this)[0].src) {
+          index = i;
+        }
+      });
+      // Retour circulaire
+      let prevIndex = (index - 1 + imagesCollection.length) % imagesCollection.length;
+      let prev = imagesCollection[prevIndex] || imagesCollection[0];
+      $(".lightboxImage").attr("src", $(prev).attr("src"));
+    },
+    nextImage() {
+      let activeImage = null;
+      $("img.gallery-item").each(function() {
+        if ($(this)[0].src === $(".lightboxImage")[0].src) {
+          activeImage = $(this);
+        }
+      });
+      let activeTag = $(".tags-bar span.active-tag").data("images-toggle");
+      let imagesCollection = [];
+      if (activeTag === "all") {
+        $(".item-column").each(function() {
+          if ($(this).children("img").length) {
+            imagesCollection.push($(this).children("img"));
+          }
+        });
+      } else {
+        $(".item-column").each(function() {
+          if (
+            $(this)
+              .children("img")
+              .data("gallery-tag") === activeTag
+          ) {
+            imagesCollection.push($(this).children("img"));
+          }
+        });
+      }
+      let index = 0;
+      $(imagesCollection).each(function(i) {
+        if ($(activeImage)[0].src === $(this)[0].src) {
+          index = i;
+        }
+      });
+      // Retour circulaire
+      let nextIndex = (index + 1) % imagesCollection.length;
+      let next = imagesCollection[nextIndex] || imagesCollection[0];
+      $(".lightboxImage").attr("src", $(next).attr("src"));
+    },
+    createLightBox(gallery, lightboxId, navigation) {
+      // On insère la modale dans <body> et non plus dans .gallery
+      $("body").append(`<div class="modal fade" id="${
+        lightboxId ? lightboxId : "galleryLightbox"
+      }" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body" style="position: relative;">
+                            ${
+                              navigation
+                                ? '<div class="mg-prev" style="cursor:pointer;position:absolute;top:50%;left:-15px;background:white;"><</div>'
+                                : '<span style="display:none;" />'
+                            }
+                            <img class="lightboxImage img-fluid" alt="Contenu de l\'image affichée dans la modale au clique"/>
+                            ${
+                              navigation
+                                ? '<div class="mg-next" style="cursor:pointer;position:absolute;top:50%;right:-15px;background:white;">></div>'
+                                : '<span style="display:none;" />'
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+    },
+    showItemTags(gallery, position, tags) {
+      var tagItems =
+        '<li class="nav-item"><span class="nav-link active active-tag"  data-images-toggle="all">Tous</span></li>';
+      $.each(tags, function(index, value) {
+        tagItems += `<li class="nav-item active">
+                <span class="nav-link"  data-images-toggle="${value}">${value}</span></li>`;
+      });
+      var tagsRow = `<ul class="my-4 tags-bar nav nav-pills">${tagItems}</ul>`;
+
+      if (position === "bottom") {
+        gallery.append(tagsRow);
+      } else if (position === "top") {
+        gallery.prepend(tagsRow);
+      } else {
+        console.error(`Unknown tags position: ${position}`);
       }
     },
-    createLightBox: function($gallery, lightboxId, navigation) {
-      // Identifiant de la modale
-      const id = lightboxId || "galleryLightbox";
-    
-      const prev = navigation
-        ? '<div class="mg-prev" style="cursor:pointer;position:absolute;top:50%;left:-15px;background:white;"><</div>'
-        : '<span style="display:none;"></span>';
-      const next = navigation
-        ? '<div class="mg-next" style="cursor:pointer;position:absolute;top:50%;right:-15px;background:white;">></div>'
-        : '<span style="display:none;"></span>';
-    
-      // Injection de la structure de la lightbox
-      const $modal = $(`
-        <div class="modal fade" id="${id}" tabindex="-1" role="dialog" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body" style="position: relative;">
-                ${prev}
-                <img class="lightboxImage img-fluid" alt="Image affichée dans la modale" />
-                ${next}
-              </div>
-            </div>
-          </div>
-        </div>
-      `);
-      $gallery.append($modal);
-        },
-    
-    // Ouvre la lightbox et y injecte l'image cliquée
-    openLightBox: function($item, lightboxId) {
-      const $lb = $(`#${lightboxId}`);
-      $lb.find(".lightboxImage").attr("src", $item.attr("src"));
-      $lb.modal("toggle");
-    },
+    filterByTag() {
+      if ($(this).hasClass("active-tag")) {
+        return;
+      }
+      $(".active-tag").removeClass("active active-tag");
+      $(this).addClass("active-tag");
 
-    // Change d'image (+1 ou -1) avec wrap-around et filtrage par tag
-    changeImage: function(lightboxId, direction) {
-      const $gallery = this;
-      const $lb      = $(`#${lightboxId}`);
-      const $img     = $lb.find(".lightboxImage");
-      const currSrc  = $img.attr("src");
-    
-      // 1) collecte et filtre des src
-      const srcs = $gallery
-        .find("img.gallery-item")
-        .filter((i, img) => {
-          const tag = $gallery.find(".tags-bar .active-tag").data("images-toggle");
-          return tag === "all" || $(img).data("gallery-tag") === tag;
-        })
-        .map((i, img) => $(img).attr("src"))
-        .get();
-    
-      // 2) calcul de l'index suivant
-      let idx = srcs.indexOf(currSrc);
-      if (idx < 0) return;
-      idx = (idx + direction + srcs.length) % srcs.length;
-      const nextSrc = srcs[idx];
-    
-      // 3) on translate hors-champ
-      const offset = direction > 0 ? "-100%" : "100%";
-      $img.css("transform", `translateX(${offset})`);
-    
-      // 4) après la transition CSS (300ms), on swap et revient
-      setTimeout(() => {
-        // on replace l'image juste de l'autre côté
-        const reset = direction > 0 ? "100%" : "-100%";
-        $img
-          .attr("src", nextSrc)
-          .css("transform", `translateX(${reset})`);
-    
-        // et on glisse vers le centre
-        setTimeout(() => {
-          $img.css("transform", "translateX(0)");
-        }, 20);
-      }, 300);
-    }
-    ,
+      var tag = $(this).data("images-toggle");
 
-    // Génère le HTML de la barre de tags
-    showItemTags: function($gallery, position, tags) {
-      let items = `<li class="nav-item"><span class="nav-link active active-tag" data-images-toggle="all">Tous</span></li>`;
-      tags.forEach(tag => {
-        items += `<li class="nav-item"><span class="nav-link" data-images-toggle="${tag}">${tag}</span></li>`;
-      });
-      const nav = `<ul class="my-4 tags-bar nav nav-pills">${items}</ul>`;
-      position === "top" ? $gallery.prepend(nav) : $gallery.append(nav);
-    },
-
-    // Montre/cach e les items selon le tag cliqué
-    filterByTag: function() {
-      const $link = $(this);
-      if ($link.hasClass("active-tag")) return;
-
-      const $gallery = $link.closest(".gallery");
-      $gallery.find(".active-tag").removeClass("active active-tag");
-      $link.addClass("active active-tag");
-
-      const tag = $link.data("images-toggle");
-      $gallery.find(".item-column").each(function() {
-        const $col = $(this);
-        const $img = $col.find("img.gallery-item");
-        if (tag === "all" || $img.data("gallery-tag") === tag) {
-          $col.show(300);
-        } else {
-          $col.hide(300);
+      $(".gallery-item").each(function() {
+        $(this)
+          .parents(".item-column")
+          .hide();
+        if (tag === "all") {
+          $(this)
+            .parents(".item-column")
+            .show(300);
+        } else if ($(this).data("gallery-tag") === tag) {
+          $(this)
+            .parents(".item-column")
+            .show(300);
         }
       });
     }
