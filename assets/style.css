@@ -40,6 +40,7 @@ body {
 
 .social-link img {
 	width: 20px;
+	height: 20px;
 }
 
 #about {
@@ -68,8 +69,7 @@ body {
 }
 
 .picture img {
-	width: 100%;
-
+	width: 369px;
 }
 #about-me {
 	flex: 2
@@ -118,7 +118,7 @@ body {
 }
 .gallery-item {
 	position: absolute;
-	width: 100%;
+	width: 380px;
 	height: 100%;
 	object-fit: cover;
 	padding: .5em;

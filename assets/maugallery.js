@@ -121,12 +121,17 @@
       $(`#${lightboxId}`)
         .find(".lightboxImage")
         .attr("src", element.attr("src"));
-      $(`#${lightboxId}`).modal("toggle");
+
+      // Correction Bootstrap 5: utilisation de l'API JS native (plus de .modal())
+      var modalElement = document.getElementById(lightboxId);
+      if (modalElement) {
+        var bsModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        bsModal.show();
+      }
     },
     prevImage() {
       let activeImage = null;
       $("img.gallery-item").each(function() {
-        // Correction : comparer les URL absolues (plus robuste)
         if ($(this)[0].src === $(".lightboxImage")[0].src) {
           activeImage = $(this);
         }
@@ -199,7 +204,6 @@
       $(".lightboxImage").attr("src", $(next).attr("src"));
     },
     createLightBox(gallery, lightboxId, navigation) {
-      // On insère la modale dans <body> et non plus dans .gallery
       $("body").append(`<div class="modal fade" id="${
         lightboxId ? lightboxId : "galleryLightbox"
       }" tabindex="-1" role="dialog" aria-hidden="true">
