@@ -38,7 +38,7 @@
     <title>Nina Carducci </title>
     <meta name="description" content="Photographe professionnelle, je vous propose mes services pour capturer vos plus beaux moments. Je me déplace en Île-de-France pour réaliser vos photos.">
     <link rel="stylesheet" href="assets/bootstrap/bootstrap.css">
-    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="./assets/style.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Correction : Ajout de &display=swap -->
@@ -47,14 +47,14 @@
     <script src="./assets/bootstrap/bootstrap.bundleminifie.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous" defer></script>
     <script src="./assets/maugallery.js" defer></script>
-    <script src="./assets/scripts.js" defer></script>
+    <script src="./assets/scripts.min.js" defer></script>
     <!-- Correction : Ajout de &display=swap -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <nav>
-            <div class="top-header">
+            <section class="top-header">
                 <h1 class="name">Nina Carducci</h1>
                 <div class="nav">   
                     <ul>
@@ -65,10 +65,9 @@
                         <li><a class="social-link" href="https://www.instagram.com/ninacarducci.photo/?hl=fr" target="_blank"><img loading="lazy" src="assets/images/instagram.png" alt="liens vers notre page instagram" width="32" height="32"></a></li>
                     </ul>
                 </div>
-            </div>
+            </section>
         </nav>
-        <div id="header">
-
+        <section id="header">
             <!-- Correction : Ajout width/height sur chaque image carousel -->
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
@@ -96,10 +95,10 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-        </div>
+        </section>
     </header>
     <main>
-        <div id="about">
+        <section id="about">
             <div class="picture left">
                 <!-- Correction : Ajout width/height -->
                 <img loading="lazy" src="./assets/images/nina.png" alt="Image de Nina Carducci, photographe professionnelle" width="369" height="370"/>
@@ -110,8 +109,8 @@
                 <p>Nous passons notre vie à chercher le bonheur, et lorsque nous y touchons, nous n’avons qu’une envie : le figer au travers de photographies pour le savourer avec les personnes qui sont importantes à nos yeux, ou le partager au plus grand nombre.
                     C’est ce que je vous propose : saisir ces merveilleux moments au travers de mon regard, mon approche, ma technique. Rendre ces moments immortels, afin que vous puissiez y puiser de l’amour, du bonheur, de la tendresse et de lumière à chaque fois que vous poserez les yeux sur vos photos.</p>
             </div>
-        </div>
-        <div id="gallery">
+        </section>
+        <section id="gallery">
             <h2 class="title">Portfolio</h2>
             <div class="container py-3">
                 <div class="gallery" style="display: none">
@@ -135,8 +134,8 @@
                     <figcaption class="quote__author">- Richard Avedon</figcaption>
                 </figure>
             </div>
-        </div>
-        <div id="services">
+        </section>
+        <section id="services">
             <h2 class="title">Mes services</h2>
             <div class="container">
                 <div class="service">
@@ -170,7 +169,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
         <div class="quote">
             <figure>
                 <blockquote>
@@ -181,7 +180,7 @@
         </div>
     </main>
     <footer>
-            <div id="contact">
+            <section id="contact">
                 <div class="container">
                     <div class="form-container">
                         <h2>Une question ? Une demande de devis ?</h2>
@@ -202,7 +201,7 @@
                         <img loading="lazy" src="./assets/images/camera.png" alt="Image d'un appareil photo vintage" width="500" height="500"/>
                     </div>
                 </div>
-            </div>
+            </section>
         </footer>
 </body>
 </html>

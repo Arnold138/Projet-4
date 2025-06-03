@@ -279,6 +279,8 @@ li.nav-item {
 .tags-bar .nav-link {
   background-color: transparent;
   color: #333;
+   border-radius: 25px !important; /* Valeur à ajuster selon ton design */
+  transition: background 0.2s, border-radius 0.2s;
 }
 @media all and (max-width: 1180px) {
 	.picture {
