@@ -268,7 +268,7 @@ li.nav-item {
 
 .tags-bar .nav-link.active-tag,
 .tags-bar .nav-link.active {
-  background-color: rgb(224, 194, 24) !important;
+  background-color: rgb(183 164 56) !important;
   color: #fff !important;
   border-radius: 30px !important;
   font-weight: bold;
